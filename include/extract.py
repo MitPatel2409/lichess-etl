@@ -41,11 +41,14 @@ ORDER BY ALL
 """
 
 
-def extract_game_aggregates(year: int, month: int) -> pd.DataFrame:
-    """Game counts and results for one month, grouped by time control, both Elo bands, opening and termination."""
+def extract_game_aggregates(year: int, month: int, url: str | None = None) -> pd.DataFrame:
+    """Game counts and results for one month, grouped by time control, both Elo bands, opening and termination.
+
+    `url` replaces the Hugging Face path; tests point it at a local Parquet file.
+    """
     con = duckdb.connect(config={"memory_limit": "2GB"})
     try:
-        url = URL.format(year=year, month=month)
+        url = url or URL.format(year=year, month=month)
         return con.execute(GAME_AGGREGATES_SQL, {"year": year, "month": month, "url": url}).df()
     finally:
         con.close()
