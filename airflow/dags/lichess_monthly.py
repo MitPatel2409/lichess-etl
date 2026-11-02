@@ -18,19 +18,23 @@ def lichess_monthly():
 
         import psycopg
 
-        from include.extract import extract_game_aggregates
-        from include.load import load_game_aggregates
+        from include.extract import extract_game_aggregates, extract_player_month
+        from include.load import replace_month
 
         year, month = params["year"], params["month"]
-        df = extract_game_aggregates(year, month)
+        tables = {
+            "game_aggregates": extract_game_aggregates(year, month),
+            "player_month": extract_player_month(year, month),
+        }
         with psycopg.connect(
             host="postgres",
             dbname=os.environ["POSTGRES_DB"],
             user=os.environ["POSTGRES_USER"],
             password=os.environ["POSTGRES_PASSWORD"],
         ) as conn:
-            load_game_aggregates(conn, year, month, df)
-        print(f"Loaded {len(df):,} rows for {year}-{month:02d}")
+            for table, df in tables.items():
+                replace_month(conn, table, year, month, df)
+                print(f"Loaded {len(df):,} rows into raw.{table} for {year}-{month:02d}")
 
     load_month()
 

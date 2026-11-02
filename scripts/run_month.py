@@ -14,8 +14,8 @@ from dotenv import load_dotenv
 # Make `include` importable when this file is run directly.
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from include.extract import extract_game_aggregates  # noqa: E402
-from include.load import load_game_aggregates  # noqa: E402
+from include.extract import extract_game_aggregates, extract_player_month  # noqa: E402
+from include.load import replace_month  # noqa: E402
 
 parser = argparse.ArgumentParser()
 parser.add_argument("year", type=int)
@@ -23,7 +23,10 @@ parser.add_argument("month", type=int)
 args = parser.parse_args()
 
 load_dotenv()
-df = extract_game_aggregates(args.year, args.month)
+tables = {
+    "game_aggregates": extract_game_aggregates(args.year, args.month),
+    "player_month": extract_player_month(args.year, args.month),
+}
 
 with psycopg.connect(
     host="localhost",
@@ -32,6 +35,6 @@ with psycopg.connect(
     user=os.environ["POSTGRES_USER"],
     password=os.environ["POSTGRES_PASSWORD"],
 ) as conn:
-    load_game_aggregates(conn, args.year, args.month, df)
-
-print(f"Loaded {len(df):,} rows for {args.year}-{args.month:02d}")
+    for table, df in tables.items():
+        replace_month(conn, table, args.year, args.month, df)
+        print(f"Loaded {len(df):,} rows into raw.{table} for {args.year}-{args.month:02d}")
