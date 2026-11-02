@@ -1,0 +1,14 @@
+models:
+  - name: stg_game_aggregates
+    description: raw.game_aggregates with clean names and standardized terminations.
+    columns:
+      - name: time_control
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [ultrabullet, bullet, blitz, rapid, classical, correspondence]
+      - name: termination
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [Normal, Time forfeit, Abandoned, Other]

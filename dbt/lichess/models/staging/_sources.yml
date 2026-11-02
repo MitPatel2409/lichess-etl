@@ -1,0 +1,6 @@
+sources:
+  - name: raw
+    schema: raw
+    tables:
+      - name: game_aggregates
+        description: One row per month x time-control class x White band x Black band x ECO x opening x termination, loaded by the Airflow DAG.

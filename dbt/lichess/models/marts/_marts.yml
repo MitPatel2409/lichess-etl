@@ -1,0 +1,59 @@
+models:
+  - name: fct_game_outcomes
+    description: Games, White wins, Black wins and draws per month x time control x both Elo bands x opening x termination.
+    columns:
+      - name: month
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_month')
+                field: month_date
+      - name: time_control
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_time_control')
+                field: time_control
+      - name: white_elo_band
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_rating_band')
+                field: elo_band
+      - name: black_elo_band
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_rating_band')
+                field: elo_band
+      - name: opening_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_opening')
+                field: opening_id
+
+  - name: dim_month
+    columns:
+      - name: month_date
+        data_tests: [unique, not_null]
+
+  - name: dim_time_control
+    columns:
+      - name: time_control
+        data_tests:
+          - unique
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [ultrabullet, bullet, blitz, rapid, classical, correspondence]
+
+  - name: dim_rating_band
+    columns:
+      - name: elo_band
+        data_tests: [unique, not_null]
+
+  - name: dim_opening
+    columns:
+      - name: opening_id
+        data_tests: [unique, not_null]

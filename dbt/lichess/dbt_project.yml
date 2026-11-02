@@ -1,0 +1,12 @@
+name: lichess
+version: "1.0.0"
+profile: lichess
+
+models:
+  lichess:
+    # All models are plain tables, rebuilt on every run.
+    +materialized: table
+    staging:
+      +schema: staging
+    marts:
+      +schema: marts

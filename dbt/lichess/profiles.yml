@@ -1,0 +1,13 @@
+# Credentials come from the environment (the project's .env), never from this file.
+lichess:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: localhost
+      port: 5432
+      dbname: "{{ env_var('POSTGRES_DB') }}"
+      user: "{{ env_var('POSTGRES_USER') }}"
+      password: "{{ env_var('POSTGRES_PASSWORD') }}"
+      schema: marts
+      threads: 4
