@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 # Make `include` importable when this file is run directly.
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from include.extract import extract_game_aggregates, extract_player_month  # noqa: E402
+from include.extract import extract_activity_by_hour, extract_game_aggregates, extract_player_month  # noqa: E402
 from include.load import replace_month  # noqa: E402
 
 parser = argparse.ArgumentParser()
@@ -26,6 +26,7 @@ load_dotenv()
 tables = {
     "game_aggregates": extract_game_aggregates(args.year, args.month),
     "player_month": extract_player_month(args.year, args.month),
+    "activity_by_hour": extract_activity_by_hour(args.year, args.month),
 }
 
 with psycopg.connect(

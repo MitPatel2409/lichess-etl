@@ -75,6 +75,21 @@ ORDER BY ALL
 """
 
 
+# weekday is ISO: 1 = Monday ... 7 = Sunday. Hours are UTC, 0-23.
+ACTIVITY_BY_HOUR_SQL = """
+SELECT
+    make_date($year, $month, 1) AS month,
+    isodow(UTCDate) AS weekday,
+    hour(CAST(UTCTime AS TIME)) AS hour,
+    time_control_class(TimeControl) AS time_control_class,
+    COUNT(*) AS games
+FROM read_parquet($url)
+WHERE WhiteElo IS NOT NULL AND BlackElo IS NOT NULL
+GROUP BY ALL
+ORDER BY ALL
+"""
+
+
 def _run(query: str, year: int, month: int, url: str | None) -> pd.DataFrame:
     """Run one query against a month's Parquet. `url` replaces the Hugging Face path; tests point it at a local file."""
     con = duckdb.connect(config={"memory_limit": "2GB"})
@@ -94,3 +109,8 @@ def extract_game_aggregates(year: int, month: int, url: str | None = None) -> pd
 def extract_player_month(year: int, month: int, url: str | None = None) -> pd.DataFrame:
     """One row per player and time control for one month: games, wins, average and last rating, Elo band."""
     return _run(PLAYER_MONTH_SQL, year, month, url)
+
+
+def extract_activity_by_hour(year: int, month: int, url: str | None = None) -> pd.DataFrame:
+    """Games played in one month, by weekday, hour (UTC) and time control."""
+    return _run(ACTIVITY_BY_HOUR_SQL, year, month, url)

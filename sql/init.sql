@@ -33,3 +33,13 @@ CREATE TABLE raw.player_month (
     last_rating        SMALLINT     NOT NULL,
     elo_band           SMALLINT     NOT NULL
 );
+
+-- One row per month x weekday x hour x time-control class.
+-- weekday is ISO (1 = Monday ... 7 = Sunday); hour is UTC, 0-23.
+CREATE TABLE raw.activity_by_hour (
+    month              DATE     NOT NULL,
+    weekday            SMALLINT NOT NULL,
+    hour               SMALLINT NOT NULL,
+    time_control_class TEXT     NOT NULL,
+    games              INTEGER  NOT NULL
+);
