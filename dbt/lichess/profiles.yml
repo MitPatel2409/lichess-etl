@@ -1,10 +1,11 @@
 # Credentials come from the environment (the project's .env), never from this file.
+# POSTGRES_HOST is "postgres" inside Docker (set in docker-compose.yml) and localhost on your PC.
 lichess:
   target: dev
   outputs:
     dev:
       type: postgres
-      host: localhost
+      host: "{{ env_var('POSTGRES_HOST', 'localhost') }}"
       port: 5432
       dbname: "{{ env_var('POSTGRES_DB') }}"
       user: "{{ env_var('POSTGRES_USER') }}"

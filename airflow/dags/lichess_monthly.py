@@ -37,7 +37,12 @@ def lichess_monthly():
                 replace_month(conn, table, year, month, df)
                 print(f"Loaded {len(df):,} rows into raw.{table} for {year}-{month:02d}")
 
-    load_month()
+    # Rebuilds every model and runs every test. A failing test fails the task.
+    @task.bash(cwd="/opt/airflow/dbt/lichess")
+    def dbt_build():
+        return "/opt/dbt-venv/bin/dbt build"
+
+    load_month() >> dbt_build()
 
 
 lichess_monthly()
