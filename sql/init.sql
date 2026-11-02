@@ -1,5 +1,8 @@
 -- Runs once, when Postgres starts with an empty data volume.
 
+-- Airflow's own metadata lives in a separate database on the same server.
+CREATE DATABASE airflow;
+
 CREATE SCHEMA raw;
 
 -- One row per month x time-control class x White band x Black band x ECO x opening x termination.
