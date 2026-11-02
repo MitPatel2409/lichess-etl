@@ -12,3 +12,9 @@ models:
           - accepted_values:
               arguments:
                 values: [Normal, Time forfeit, Abandoned, Other]
+
+  - name: stg_player_month
+    description: raw.player_month with names that match the other models.
+
+  - name: stg_activity_by_hour
+    description: raw.activity_by_hour with names that match the other models.

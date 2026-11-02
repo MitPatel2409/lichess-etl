@@ -4,3 +4,7 @@ sources:
     tables:
       - name: game_aggregates
         description: One row per month x time-control class x White band x Black band x ECO x opening x termination, loaded by the Airflow DAG.
+      - name: player_month
+        description: One row per month x player x time-control class, loaded by the Airflow DAG.
+      - name: activity_by_hour
+        description: One row per month x weekday (ISO, 1 = Monday) x hour (UTC) x time-control class, loaded by the Airflow DAG.

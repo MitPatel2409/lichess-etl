@@ -33,6 +33,46 @@ models:
                 to: ref('dim_opening')
                 field: opening_id
 
+  - name: fct_player_month
+    description: Games, wins, average and last rating, and Elo band per month x player x time control.
+    columns:
+      - name: month
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_month')
+                field: month_date
+      - name: player_id
+        data_tests: [not_null]
+      - name: time_control
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_time_control')
+                field: time_control
+      - name: elo_band
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_rating_band')
+                field: elo_band
+
+  - name: fct_activity_by_hour
+    description: Games played per month x weekday x hour (UTC) x time control.
+    columns:
+      - name: month
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_month')
+                field: month_date
+      - name: time_control
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_time_control')
+                field: time_control
+
   - name: dim_month
     columns:
       - name: month_date
