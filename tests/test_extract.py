@@ -4,7 +4,7 @@ import pytest
 
 from include.extract import extract_activity_by_hour, extract_game_aggregates, extract_player_month
 
-# Ten games, each one testing a rule. There is no movetext column, so the tests
+# Eleven games, each one testing a rule. There is no movetext column, so the tests
 # fail if an extraction ever starts reading it.
 ROWS = [
     # White, Black, WhiteElo, BlackElo, Result, UTCDate, UTCTime, TimeControl, ECO, Opening, Termination
@@ -18,6 +18,7 @@ ROWS = [
     ("erin", "dave", 1500, 1500, "1-0", "2013-01-02", "12:40:00+00", "-", "B01", "Scandinavian Defense", "Normal"),  # no clock: correspondence
     ("frank", "erin", None, 1500, "1-0", "2013-01-04", "08:00:00+00", "180+0", "C00", "French Defense", "Normal"),  # missing White rating: dropped
     ("erin", "gina", 1500, None, "0-1", "2013-01-04", "08:10:00+00", "180+0", "C00", "French Defense", "Normal"),  # missing Black rating: dropped
+    ("hank", "ivan", 1500, 1500, "*", "2013-01-05", "11:00:00+00", "180+0", "?", "?", "Abandoned"),  # no result: dropped
 ]
 
 
@@ -57,6 +58,13 @@ def activity_by_hour(games_parquet):
 
 def test_drops_games_with_missing_ratings(game_aggregates):
     assert game_aggregates["games"].sum() == 8
+
+
+def test_drops_games_without_a_result(game_aggregates, player_month, activity_by_hour):
+    # hank vs ivan ended '*'. Leaving it out of all three tables keeps their totals equal.
+    assert "Abandoned" not in set(game_aggregates["termination"])
+    assert not {"hank", "ivan"} & set(player_month["player"])
+    assert activity_by_hour["games"].sum() == 8
 
 
 def test_month_comes_from_the_params(game_aggregates):

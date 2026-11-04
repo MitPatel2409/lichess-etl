@@ -18,15 +18,11 @@ def lichess_monthly():
 
         import psycopg
 
-        from include.extract import extract_activity_by_hour, extract_game_aggregates, extract_player_month
+        from include.extract import extract_month
         from include.load import replace_month
 
         year, month = params["year"], params["month"]
-        tables = {
-            "game_aggregates": extract_game_aggregates(year, month),
-            "player_month": extract_player_month(year, month),
-            "activity_by_hour": extract_activity_by_hour(year, month),
-        }
+        tables = extract_month(year, month)
         with psycopg.connect(
             host="postgres",
             dbname=os.environ["POSTGRES_DB"],
