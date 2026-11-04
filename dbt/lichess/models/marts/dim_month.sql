@@ -1,4 +1,4 @@
--- One row per loaded month. Power BI uses this as its date table.
+-- One row per loaded month. Every fact joins to it, and Power BI's month slicer reads from it.
 select distinct
     month as month_date,
     extract(year from month)::int as year,

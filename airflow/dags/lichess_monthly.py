@@ -11,6 +11,7 @@ from airflow.sdk import Param, dag, task
     },
 )
 def lichess_monthly():
+    # Aggregates the month with DuckDB, then replaces its rows in the three raw tables.
     @task
     def load_month(params=None):
         # Imported here, not at the top: Airflow re-parses this file often, and DuckDB and pandas are slow to import.
@@ -33,7 +34,7 @@ def lichess_monthly():
                 replace_month(conn, table, year, month, df)
                 print(f"Loaded {len(df):,} rows into raw.{table} for {year}-{month:02d}")
 
-    # Rebuilds every model and runs every test. A failing test fails the task.
+    # Rebuilds the staging and mart models and runs every test. A failing test fails the task.
     @task.bash(cwd="/opt/airflow/dbt/lichess")
     def dbt_build():
         return "/opt/dbt-venv/bin/dbt build"

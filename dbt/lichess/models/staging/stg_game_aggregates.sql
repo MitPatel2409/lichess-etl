@@ -1,4 +1,5 @@
--- Same grain as raw.game_aggregates. Renames columns, fills missing text, and groups rare terminations into 'Other'.
+-- Same grain as raw.game_aggregates. Renames columns, fills missing text, and groups rare terminations
+-- (rules infraction, insufficient material, ...) into 'Other'.
 select
     month,
     time_control_class as time_control,
